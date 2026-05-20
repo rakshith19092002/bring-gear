@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
@@ -16,10 +18,11 @@ app.use(express.json());
 ========================= */
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "rakshith",
-  database: "bringgear",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: 3306,
 });
 
 db.connect((err) => {
@@ -27,7 +30,7 @@ db.connect((err) => {
     console.log("❌ Database Connection Error");
     console.log(err);
   } else {
-    console.log("✅ MySQL Connected");
+    console.log("✅ MySQL Connected Successfully");
   }
 });
 
@@ -60,7 +63,7 @@ app.post("/signup", (req, res) => {
     landmark,
   } = req.body;
 
-  // CHECK EMAIL EXISTS
+  // CHECK IF EMAIL EXISTS
   const checkEmailQuery =
     "SELECT * FROM users WHERE LOWER(email) = LOWER(?)";
 
@@ -74,7 +77,7 @@ app.post("/signup", (req, res) => {
       });
     }
 
-    // EMAIL ALREADY EXISTS
+    // EMAIL EXISTS
     if (checkResult.length > 0) {
       return res.status(400).send({
         success: false,
@@ -146,13 +149,6 @@ app.post("/signup", (req, res) => {
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
-  console.log("LOGIN REQUEST:");
-  console.log(email);
-  console.log(password);
-
-  // IMPORTANT:
-  // LOWER(email) removes uppercase/lowercase issue
-
   const loginQuery = `
     SELECT * FROM users
     WHERE LOWER(email) = LOWER(?)
@@ -170,10 +166,7 @@ app.post("/login", (req, res) => {
       });
     }
 
-    console.log("LOGIN RESULT:");
-    console.log(result);
-
-    // USER FOUND
+    // LOGIN SUCCESS
     if (result.length > 0) {
       return res.send({
         success: true,
@@ -182,7 +175,7 @@ app.post("/login", (req, res) => {
       });
     }
 
-    // USER NOT FOUND
+    // LOGIN FAILED
     return res.status(401).send({
       success: false,
       message: "Invalid Email or Password",
@@ -194,6 +187,8 @@ app.post("/login", (req, res) => {
    SERVER START
 ========================= */
 
-app.listen(5000, () => {
-  console.log("🚀 Server running on port 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
