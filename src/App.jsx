@@ -476,7 +476,7 @@ const bikeImages = [
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/signup",
+        "https://bring-gear-backend.onrender.com//signup",
         signupData
       );
 
@@ -1807,7 +1807,7 @@ const bikeImages = [
                     }
 
                     try {
-                      const response = await axios.post("http://localhost:5000/check-email", {
+                      const response = await axios.post("https://bring-gear-backend.onrender.com//check-email", {
                         email: loginData.email.trim(),
                       });
 
@@ -1877,7 +1877,7 @@ const bikeImages = [
                     }
 
                     try {
-                      const response = await axios.post("http://localhost:5000/login", {
+                      const response = await axios.post("https://bring-gear-backend.onrender.com//login", {
                         email: loginData.email.trim(),
                         password: loginData.password.trim(),
                       });
